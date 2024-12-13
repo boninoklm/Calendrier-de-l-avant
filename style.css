@@ -1,0 +1,94 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f7f7f7;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.ball {
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* Carré responsive */
+  background-color: red; /* Boule rouge */
+  border-radius: 50%; /* Rond parfait */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.ball::after {
+  content: attr(data-number); /* Affiche le chiffre au centre */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Carré vert au sommet de la boule */
+.ball::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20%;
+  height: 10%;
+  background-color: green;
+  border-radius: 2px; /* Coin légèrement arrondi */
+}
+
+
+
+#scratch-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fond semi-transparent */
+  display: none; /* Cacher par défaut */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#scratch-modal.active {
+  display: flex; /* Afficher le modal quand il est actif */
+}
+
+#scratch-canvas {
+  width: 90%; /* Taille du cercle à gratter */
+  max-width: 400px; /* Taille maximale pour mobiles */
+  height: auto;
+  aspect-ratio: 1; /* Garde un cercle parfait */
+  border-radius: 50%; /* Rendre circulaire */
+  background-color: white; /* Couleur de la surface à gratter */
+  position: relative;
+}
+
+#close-modal {
+  position: absolute;
+  bottom: 20px;
+  padding: 10px 20px;
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
