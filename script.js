@@ -39,7 +39,7 @@ function setupScratchCanvas(number) {
     // Définir une image comme fond du canvas
     var imagePath = `images/${number}.png`; // Chemin des images
     canvas.style.backgroundImage = `url('${imagePath}')`;
-    canvas.style.backgroundSize = "150%"; // Taille des images (1.5x plus petite)
+    canvas.style.backgroundSize = "90%"; // Taille des images (1.5x plus petite)
     canvas.style.backgroundPosition = "center"; // Centrer l'image
     canvas.style.backgroundRepeat = "no-repeat"; // Pas de répétition
 
