@@ -6,12 +6,17 @@ var closeModalButton = document.getElementById('close-modal');
 
 var ctx, isScratching = false, lastPoint;
 
-// Tableau pour enregistrer les états des boules
-var scratchStates = Array.from({ length: 25 }, () => null); // 25 boules, état initial = null
+// Charger les états de grattage depuis localStorage
+var scratchStates = JSON.parse(localStorage.getItem('scratchStates')) || Array.from({ length: 25 }, () => null);
 
 // Fonction pour empêcher le défilement de la page
 function preventScroll(e) {
     e.preventDefault();
+}
+
+// Fonction pour sauvegarder les états dans localStorage
+function saveScratchStates() {
+    localStorage.setItem('scratchStates', JSON.stringify(scratchStates));
 }
 
 // Fonction pour ouvrir le modal de la boule active
@@ -34,13 +39,17 @@ function setupScratchCanvas(number) {
     // Définir une image comme fond du canvas
     var imagePath = `images/${number}.png`; // Chemin des images
     canvas.style.backgroundImage = `url('${imagePath}')`;
-    canvas.style.backgroundSize = "90%"; // Taille des images (1.5x plus petite)
+    canvas.style.backgroundSize = "150%"; // Taille des images (1.5x plus petite)
     canvas.style.backgroundPosition = "center"; // Centrer l'image
     canvas.style.backgroundRepeat = "no-repeat"; // Pas de répétition
 
     // Restaurer l’état précédent s’il existe
     if (scratchStates[number - 1]) {
-        ctx.putImageData(scratchStates[number - 1], 0, 0); // Restaurer l'état
+        var imageData = new Image();
+        imageData.src = scratchStates[number - 1];
+        imageData.onload = function () {
+            ctx.drawImage(imageData, 0, 0, canvas.width, canvas.height);
+        };
     } else {
         // Sinon, créer une nouvelle couche à gratter (rouge)
         ctx.globalCompositeOperation = 'source-over';
@@ -105,16 +114,17 @@ closeModalButton.addEventListener('click', function () {
     modal.classList.remove('active'); // Cache le modal
 
     // Sauvegarder l’état actuel du canvas
-    var currentIndex = Array.from(balls).findIndex(
-        ball => ball.dataset.number == modal.dataset.number
-    );
-    scratchStates[currentIndex] = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var currentIndex = parseInt(modal.dataset.number) - 1;
+
+    // Convertir l'état actuel du canvas en DataURL et enregistrer
+    scratchStates[currentIndex] = canvas.toDataURL(); // Sauvegarde en base64
+    saveScratchStates(); // Enregistre dans localStorage
 
     // Réactiver le défilement
     document.body.style.overflow = '';
     window.removeEventListener('touchmove', preventScroll, { passive: false });
 
-    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.style.backgroundImage = ''; // Réinitialise l'image de fond
 });
 
