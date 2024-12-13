@@ -31,39 +31,45 @@ function openBall(number) {
 
 // Fonction pour configurer le canvas
 function setupScratchCanvas(number) {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
 
-    ctx = canvas.getContext('2d');
+  ctx = canvas.getContext('2d');
 
-    // Définir une image comme fond du canvas
-    var imagePath = `images/${number}.png`; // Chemin des images
-    canvas.style.backgroundImage = `url('${imagePath}')`;
-    canvas.style.backgroundSize = "90%"; // Taille des images (1.5x plus petite)
-    canvas.style.backgroundPosition = "center"; // Centrer l'image
-    canvas.style.backgroundRepeat = "no-repeat"; // Pas de répétition
+  // Charger une image en mode cross-origin
+  var imagePath = `images/${number}.png`; // Chemin des images
+  var img = new Image();
+  img.crossOrigin = "anonymous"; // Permet de charger les images sans restriction CORS
+  img.src = imagePath;
 
-    // Restaurer l’état précédent s’il existe
-    if (scratchStates[number - 1]) {
-        var imageData = new Image();
-        imageData.src = scratchStates[number - 1];
-        imageData.onload = function () {
-            ctx.drawImage(imageData, 0, 0, canvas.width, canvas.height);
-        };
-    } else {
-        // Sinon, créer une nouvelle couche à gratter (rouge)
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.fillStyle = 'red'; // Couleur rouge
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
+  img.onload = function () {
+      canvas.style.backgroundImage = `url('${imagePath}')`;
+      canvas.style.backgroundSize = "90%";
+      canvas.style.backgroundPosition = "center";
+      canvas.style.backgroundRepeat = "no-repeat";
 
-    // Gérer les événements de grattage
-    canvas.addEventListener('mousedown', startScratching);
-    canvas.addEventListener('mousemove', scratch);
-    canvas.addEventListener('mouseup', stopScratching);
-    canvas.addEventListener('touchstart', startScratching, { passive: false });
-    canvas.addEventListener('touchmove', scratch, { passive: false });
-    canvas.addEventListener('touchend', stopScratching);
+      // Restaurer l’état précédent s’il existe
+      if (scratchStates[number - 1]) {
+          var savedImage = new Image();
+          savedImage.src = scratchStates[number - 1];
+          savedImage.onload = function () {
+              ctx.drawImage(savedImage, 0, 0, canvas.width, canvas.height);
+          };
+      } else {
+          // Sinon, créer une nouvelle couche à gratter (rouge)
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.fillStyle = 'red'; // Couleur rouge
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+  };
+
+  // Gérer les événements de grattage
+  canvas.addEventListener('mousedown', startScratching);
+  canvas.addEventListener('mousemove', scratch);
+  canvas.addEventListener('mouseup', stopScratching);
+  canvas.addEventListener('touchstart', startScratching, { passive: false });
+  canvas.addEventListener('touchmove', scratch, { passive: false });
+  canvas.addEventListener('touchend', stopScratching);
 }
 
 // Début du grattage
