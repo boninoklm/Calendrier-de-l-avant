@@ -32,15 +32,6 @@ body {
   cursor: pointer;
 }
 
-.ball::after {
-  content: attr(data-number); /* Affiche le chiffre au centre */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Carré vert au sommet de la boule */
 .ball::before {
   content: '';
   position: absolute;
@@ -50,10 +41,22 @@ body {
   width: 20%;
   height: 10%;
   background-color: green;
-  border-radius: 2px; /* Coin légèrement arrondi */
+  border-radius: 2px; /* Coins légèrement arrondis */
 }
 
+.ball::after {
+  content: attr(data-number); /* Affiche le chiffre au centre */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
+.ball.disabled {
+  background-color: gray;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
 #scratch-modal {
   position: fixed;
@@ -80,6 +83,9 @@ body {
   border-radius: 50%; /* Rendre circulaire */
   background-color: white; /* Couleur de la surface à gratter */
   position: relative;
+  background-size: 90%; /* Images ajustées à la taille du cercle */
+  background-position: center; /* Centrer l'image */
+  background-repeat: no-repeat; /* Pas de répétition de l'image */
 }
 
 #close-modal {
